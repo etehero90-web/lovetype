@@ -283,7 +283,10 @@ function renderQ() {
 
   // 마일스톤 체크
   if (cat.milestone && curQ > 0 && CAT_OF[curQ] !== CAT_OF[curQ - 1]) {
-    showMilestone(cat.milestone, () => renderQInner(q, ui, cat, pct, total, selected));
+    showMilestone(cat.milestone, () => {
+      window._milestoneNext = null;
+      renderQInner(qs[curQ], t().ui, cats[CAT_OF[curQ]] || cats[0], pct, total, answers[curQ]);
+    });
     return;
   }
   renderQInner(q, ui, cat, pct, total, selected);
@@ -327,13 +330,15 @@ function renderQInner(q, ui, cat, pct, total, selected) {
 }
 
 function showMilestone(ms, cb) {
+  // cb를 전역 변수에 저장해서 onclick에서 안전하게 호출
+  window._milestoneNext = cb;
   document.getElementById('quiz-inner').innerHTML = `
     <div class="milestone">
       <div class="milestone-emoji">${ms.emoji}</div>
       <div class="milestone-title">${ms.title}</div>
       <div class="milestone-sub">${ms.sub}</div>
     </div>
-    <button class="btn-primary" onclick="(${cb.toString()})()">계속하기 →</button>
+    <button class="btn-primary" onclick="window._milestoneNext()">계속하기 →</button>
   `;
 }
 
