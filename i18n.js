@@ -101,10 +101,8 @@ const I18N = {
       { q:'이상형의 건강·운동에 대한 태도는?', opts:['매일 운동하는 자기관리형', '가끔 운동하는 적당한 타입', '운동보다 식단 관리 위주', '건강하면 됐지 큰 관심 없음', '함께 운동하자고 이끌어주는 타입'] },
       { q:'이상형이 가족을 어떻게 대하면 좋겠어요?', opts:['가족을 최우선으로 챙기는 사람', '가족과 적당한 거리를 유지하는 사람', '내 가족도 자기 가족처럼 대하는 사람', '각자의 가족 관계를 존중하는 사람', '미래에 함께 만들 가정을 중요시하는 사람'] },
       { q:'이상형의 생활 패턴은?', opts:['아침형 인간 (일찍 자고 일찍 일어남)', '올빼미형 (늦게 자고 늦게 일어남)', '규칙적인 생활 루틴을 갖춘 사람', '상황에 따라 유연한 패턴', '바쁘게 활동적으로 사는 사람'] },
-      // CAT 7 — 연애 가치관 (6개)
+      // CAT 7 — 연애 가치관 (4개)
       { q:'이상형과의 연애 속도는?', opts:['천천히 알아가며 깊어지는 연애', '빠르게 감정을 확인하는 연애', '자연스럽게 흘러가는 연애', '명확하게 단계를 밟아가는 연애', '타이밍보다 감정이 중요해'] },
-      { q:'이상형과 얼마나 자주 만나고 싶어요?', opts:['매일 보고 싶어', '주 2~3회가 이상적이야', '주 1회 정도면 충분해', '만날 때 충분히 시간을 갖는 게 중요해', '각자 바쁘게 살다 만나는 스타일'] },
-      { q:'이상형과 싸웠을 때 화해 방식은?', opts:['그날 안에 꼭 해결하고 싶어', '시간이 지나면 자연스럽게 풀려', '직접 만나서 얘기로 풀고 싶어', '편지나 메시지로 마음을 전하는 게 좋아', '서로 이해하면 넘어가는 스타일'] },
       { q:'이상형이 나의 친구들을 어떻게 대해줬으면 해요?', opts:['내 친구들과도 잘 어울려줬으면 해', '적당한 거리를 유지했으면 해', '친구들에게 좋은 인상을 줬으면 해', '친구 관계는 각자 독립적으로', '내 친구보다 우리 둘의 시간이 더 중요해'] },
       { q:'이상형과의 미래에 대한 생각은?', opts:['결혼을 전제로 만나고 싶어', '자연스럽게 흐름에 맡기고 싶어', '함께 성장하는 파트너이면 좋겠어', '지금 이 순간이 좋으면 됐어', '서로 독립적이면서 함께하는 관계'] },
       { q:'이상형에게 가장 원하는 한 가지는?', opts:['항상 내 편이 되어주는 것', '나를 웃게 만들어주는 것', '함께 성장할 수 있는 것', '안정감과 든든함을 주는 것', '설레고 두근거리게 해주는 것'] },
@@ -206,10 +204,8 @@ const I18N = {
       { q:'How health-conscious should your ideal type be?', opts:['Works out daily', 'Exercises occasionally', 'Focuses more on diet', 'Health is fine, not obsessed', 'Motivates me to work out too'] },
       { q:'How should your ideal type treat family?', opts:['Family comes first always', 'Maintains healthy boundaries', 'Treats my family like their own', 'Respects each other\'s family life', 'Focuses on the family we build together'] },
       { q:'What lifestyle pattern do you prefer?', opts:['Early bird (sleeps and wakes early)', 'Night owl (stays up late)', 'Disciplined daily routine', 'Flexible with their schedule', 'Always busy and active'] },
-      // CAT 7 — Values (6)
+      // CAT 7 — Values (4)
       { q:'What relationship pace do you prefer?', opts:['Slow and deep', 'Fast and intense', 'Natural and go-with-the-flow', 'Clear stages and milestones', 'Feelings matter more than timing'] },
-      { q:'How often would you like to see your ideal type?', opts:['Every day', '2–3 times a week', 'About once a week', 'Quality over quantity', 'Both busy, meeting occasionally'] },
-      { q:'How do you prefer to make up after a fight?', opts:['Resolve it the same day', 'Time heals naturally', 'Meet and talk it through', 'Express through message or letter', 'Mutual understanding and move on'] },
       { q:'How should your ideal type treat your friends?', opts:['Get along with my friends too', 'Keep a polite distance', 'Leave a good impression', 'Respect separate friendships', 'Our time together is more important'] },
       { q:'What future do you envision with your ideal type?', opts:['Dating with marriage in mind', 'Let things flow naturally', 'Growing together as partners', 'Enjoy the present moment', 'Independent yet together'] },
       { q:'What is the one thing you want most from your ideal type?', opts:['Always being on my side', 'Making me laugh', 'Growing together', 'Giving me stability and security', 'Making my heart flutter'] },
