@@ -269,28 +269,26 @@ function buildQuizScreen() {
 }
 
 function renderQ() {
-  const qs  = getQs();
-  const ui  = t().ui;
+  const qs   = getQs();
+  const ui   = t().ui;
   const cats = t().cats;
   if (curQ >= qs.length) { finishQuiz(); return; }
 
-  const catIdx   = CAT_OF[curQ];
-  const cat      = cats[catIdx] || cats[0];
-  const q        = qs[curQ];
-  const total    = qs.length;
-  const pct      = Math.round((curQ / total) * 100);
+  const catIdx  = CAT_OF[curQ];
+  const cat     = cats[catIdx] || cats[0];
+  const q       = qs[curQ];
+  const total   = qs.length;
+  const pct     = Math.round((curQ / total) * 100);
   const selected = answers[curQ];
 
-  // 마일스톤 체크
-  if (cat.milestone && curQ > 0 && CAT_OF[curQ] !== CAT_OF[curQ - 1]) {
-    showMilestone(cat.milestone, () => renderQ());
-    return;
-  }
   renderQInner(q, ui, cat, pct, total, selected);
 }
 
 function renderQInner(q, ui, cat, pct, total, selected) {
   const qs = getQs();
+  // 카테고리가 바뀌는 첫 질문이면 헤더 강조
+  const isCatStart = curQ > 0 && CAT_OF[curQ] !== CAT_OF[curQ - 1];
+
   const opts = q.opts.map((o, i) =>
     `<div class="opt${selected === i ? ' selected' : ''}" onclick="selectOpt(${i})">
       <div class="opt-radio"></div>
@@ -306,6 +304,15 @@ function renderQInner(q, ui, cat, pct, total, selected) {
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
     </div>
+
+    ${isCatStart ? `
+    <div class="cat-header" style="border-color:rgba(255,107,157,0.4);background:rgba(255,107,157,0.08);">
+      <div class="cat-header-icon">${cat.icon}</div>
+      <div>
+        <div class="cat-header-name" style="color:#ff9ecb;">${cat.name}</div>
+        <div class="cat-header-msg">${cat.msg}</div>
+      </div>
+    </div>` : ''}
 
     <div class="quiz-mid-banner">
       <div class="ad-banner-label">광고 · AD</div>
@@ -324,31 +331,6 @@ function renderQInner(q, ui, cat, pct, total, selected) {
     </div>
   `;
   renderAdSlot('quiz-mid-banner-slot', 'lg');
-}
-
-function showMilestone(ms, cb) {
-  // cb를 전역에 저장 + milestoneGo() 전역 함수로 호출
-  window._milestoneNext = cb;
-  document.getElementById('quiz-inner').innerHTML = `
-    <div class="milestone">
-      <div class="milestone-emoji">${ms.emoji}</div>
-      <div class="milestone-title">${ms.title}</div>
-      <div class="milestone-sub">${ms.sub}</div>
-    </div>
-    <button class="btn-primary" onclick="milestoneGo()">계속하기 →</button>
-  `;
-}
-
-function milestoneGo() {
-  if (typeof window._milestoneNext === 'function') {
-    const fn = window._milestoneNext;
-    window._milestoneNext = null;
-    fn();
-  } else {
-    // 폴백: 그냥 다음 질문 렌더링
-    renderQInner(getQs()[curQ], t().ui, t().cats[CAT_OF[curQ]] || t().cats[0],
-      Math.round((curQ / getQs().length) * 100), getQs().length, answers[curQ]);
-  }
 }
 
 function selectOpt(i) {
