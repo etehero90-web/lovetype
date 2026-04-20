@@ -7,16 +7,16 @@
       - 결과 폴백 완벽하게
    ========================================================= */
 
-// ── CAT_OF 배열 (39문항 기준) ─────────────────────────────
-// CAT 0 기본정보:  2개 (나의성별, 이상형느낌)  → 인덱스 0~1
-// CAT 1 연락스타일: 5개                        → 인덱스 2~6
-// CAT 2 데이트취향: 5개                        → 인덱스 7~11
-// CAT 3 감정표현:  5개                         → 인덱스 12~16
-// CAT 4 끌리는외모: 5개                        → 인덱스 17~21
-// CAT 5 성격취향:  5개                         → 인덱스 22~26
-// CAT 6 라이프스타일: 6개                      → 인덱스 27~32
-// CAT 7 연애가치관: 6개                        → 인덱스 33~38
-const CAT_OF = [0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7];
+// ── CAT_OF 배열 (37문항 기준) ─────────────────────────────
+// CAT 0 기본정보:  2개  → 인덱스 0~1
+// CAT 1 연락스타일: 5개 → 인덱스 2~6
+// CAT 2 데이트취향: 5개 → 인덱스 7~11
+// CAT 3 감정표현:  5개  → 인덱스 12~16
+// CAT 4 끌리는외모: 5개 → 인덱스 17~21
+// CAT 5 성격취향:  5개  → 인덱스 22~26
+// CAT 6 라이프스타일: 6개 → 인덱스 27~32
+// CAT 7 연애가치관: 4개 → 인덱스 33~36
+const CAT_OF = [0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7];
 
 // ── 점수 계산 ─────────────────────────────────────────────
 function calcScores(answers) {
@@ -58,78 +58,78 @@ function detectType(scores) {
 
   // 여성 이상형 (gender === 1)
   if (gender === 1) {
-    // feel 기반 우선 분기
-    if (feel === 4) return 'TYPE_F6'; // 신비로운 → 레드와인형
     if (feel === 0) {
-      // 든든 → 김치찌개형 or 건강한 그릭샐러드형
       if (lifestyle >= 4) return 'TYPE_F5';
-      return 'TYPE_F4';
+      if (express <= 2)   return 'TYPE_F4';
+      if (contact <= 2)   return 'TYPE_F4';
+      return 'TYPE_F5';
     }
     if (feel === 1) {
-      // 활발 → 딸기타르트형 or 도넛형
       if (express >= 4) return 'TYPE_F1';
+      if (contact >= 4) return 'TYPE_F3';
       return 'TYPE_F7';
     }
     if (feel === 2) {
-      // 지적 → 오페라케이크형 or 레몬마들렌형
       if (personality >= 4) return 'TYPE_F8';
-      return 'TYPE_F2';
+      if (lifestyle >= 3)   return 'TYPE_F2';
+      return 'TYPE_F8';
     }
     if (feel === 3) {
-      // 귀여움 → 흑당버블티형 or 딸기타르트형
       if (contact >= 4) return 'TYPE_F3';
-      return 'TYPE_F1';
+      if (express >= 3) return 'TYPE_F1';
+      return 'TYPE_F3';
     }
-
-    // feel 기반 분기 후 추가 분기
-    if (express >= 4 && personality >= 4) return 'TYPE_F1';
-    if (lifestyle >= 4 && personality <= 2) return 'TYPE_F5';
-    if (value >= 4 && express >= 3) return 'TYPE_F3';
+    if (feel === 4) {
+      // 신비로운 — lifestyle 낮으면 F4(편안한)로 일부 분산
+      if (lifestyle <= 2 && express <= 2) return 'TYPE_F4';
+      return 'TYPE_F6';
+    }
+    // feel 외 분기
+    if (lifestyle >= 4 && express <= 2) return 'TYPE_F5';
+    if (express >= 4 && contact >= 3)   return 'TYPE_F1';
     if (personality >= 4 && looks >= 4) return 'TYPE_F6';
-    if (contact >= 4 && express >= 3) return 'TYPE_F7';
+    if (contact >= 4 && value >= 3)     return 'TYPE_F3';
     if (personality >= 3 && lifestyle <= 2) return 'TYPE_F8';
-    if (express <= 2 && personality >= 3) return 'TYPE_F4';
-    return 'TYPE_F2'; // 폴백
+    if (express <= 2 && personality <= 2)   return 'TYPE_F4';
+    if (contact >= 3 && express >= 3)   return 'TYPE_F7';
+    return 'TYPE_F2';
   }
 
   // 남성 이상형 (gender === 0 또는 2)
-  // feel 기반 우선 분기
   if (feel === 0) {
-    // 든든 → 에스프레소형 or 곰탕형
     if (express <= 2) return 'TYPE_M1';
-    return 'TYPE_M7';
+    if (lifestyle >= 3) return 'TYPE_M7';
+    return 'TYPE_M1';
   }
   if (feel === 4) {
-    // 신비 → 오마카세형 or 다크초콜릿형
     if (lifestyle >= 4) return 'TYPE_M2';
-    return 'TYPE_M8';
-  }
-  if (feel === 1) {
-    // 활발 → 페퍼로니피자형 or 컵케이크형
-    if (express >= 4) return 'TYPE_M5';
-    return 'TYPE_M4';
-  }
-  if (feel === 2) {
-    // 지적 → 말차라떼형 or 오마카세형
-    if (express >= 3) return 'TYPE_M6';
+    if (looks >= 3)     return 'TYPE_M8';
     return 'TYPE_M2';
   }
+  if (feel === 1) {
+    if (express >= 4) return 'TYPE_M5';
+    if (contact >= 3) return 'TYPE_M4';
+    return 'TYPE_M5';
+  }
+  if (feel === 2) {
+    if (express >= 3) return 'TYPE_M6';
+    if (lifestyle >= 3) return 'TYPE_M2';
+    return 'TYPE_M6';
+  }
   if (feel === 3) {
-    // 귀여움 → 크렘브륄레형 or 컵케이크형
+    if (express <= 2) return 'TYPE_M3';
     if (contact >= 4) return 'TYPE_M5';
     return 'TYPE_M3';
   }
-
-  // 추가 분기 (feel 이외 점수 기반)
+  // feel 외 분기
   if (express <= 2 && personality <= 2) return 'TYPE_M1';
-  if (express >= 4 && contact >= 4)    return 'TYPE_M5';
+  if (express >= 4 && contact >= 4)     return 'TYPE_M5';
   if (lifestyle >= 4 && personality >= 4) return 'TYPE_M2';
   if (personality >= 4 && express <= 2) return 'TYPE_M3';
   if (contact >= 4 && personality >= 3) return 'TYPE_M4';
-  if (looks >= 4 && lifestyle <= 2)    return 'TYPE_M8';
-  if (value >= 4 && lifestyle >= 3)    return 'TYPE_M6';
-  if (express >= 3 && contact >= 3)    return 'TYPE_M7';
-  return 'TYPE_M7'; // 최종 폴백
+  if (looks >= 4 && lifestyle <= 2)     return 'TYPE_M8';
+  if (value >= 4 && lifestyle >= 3)     return 'TYPE_M6';
+  return 'TYPE_M7';
 }
 
 // ── 광고 설정 ─────────────────────────────────────────────
@@ -401,10 +401,6 @@ function buildResultScreen() {
           <div class="sec-text" id="r-charm"></div>
         </div>
         <div class="sec-card">
-          <div class="sec-label">${ui.secTimeline}</div>
-          <div class="tl-list" id="r-timeline"></div>
-        </div>
-        <div class="sec-card">
           <div class="sec-label">${ui.secStrengths}</div>
           <div class="item-list" id="r-strengths"></div>
         </div>
@@ -418,10 +414,6 @@ function buildResultScreen() {
     <button class="unlock-btn" id="unlock-btn" onclick="showVideoAd()">${ui.unlockBtn}</button>
 
     <div class="result-full" id="result-full">
-      <div class="sec-card">
-        <div class="sec-label">${ui.secCurrent}</div>
-        <div class="sec-text" id="r-charm-full"></div>
-      </div>
       <div class="sec-card">
         <div class="sec-label">${ui.secTimeline}</div>
         <div class="tl-list" id="r-timeline-full"></div>
@@ -526,9 +518,8 @@ function finishQuiz() {
   hashWrap.innerHTML = result.hashtags.map(h =>
     `<span class="hashtag">${h}</span>`).join('');
 
-  // 블러 영역 미리보기
+  // 블러 영역 미리보기 (charm + strengths만)
   document.getElementById('r-charm').textContent = result.charm;
-  renderTimeline('r-timeline', result);
   renderStrengths('r-strengths', result.strengths);
 }
 
@@ -603,8 +594,7 @@ function unlockResult() {
 
   document.getElementById('result-full').classList.add('unlocked');
 
-  // 전체 결과 채우기
-  document.getElementById('r-charm-full').textContent = result.charm;
+  // 언락 후 — 연애 시나리오 + 매력 포인트 (중복 없이 새 내용만)
   renderTimeline('r-timeline-full', result);
   renderStrengths('r-strengths-full', result.strengths);
 
@@ -829,8 +819,8 @@ function roundRect(ctx, x, y, w, h, r) {
 // ── 공유 모달 ─────────────────────────────────────────────
 function openShareModal(platform) {
   _sharePlatform = platform;
-  const ratio = (platform === 'kakao') ? 'square' : 'story';
-  _shareImageData = generateShareImage(ratio);
+  // 카카오 포함 모든 플랫폼 스토리형(9:16)으로 통일
+  _shareImageData = generateShareImage('story');
   document.getElementById('share-img-preview').src = _shareImageData;
 
   const configs = {
