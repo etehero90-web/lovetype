@@ -418,10 +418,6 @@ function buildResultScreen() {
         <div class="sec-label">${ui.secTimeline}</div>
         <div class="tl-list" id="r-timeline-full"></div>
       </div>
-      <div class="sec-card">
-        <div class="sec-label">${ui.secStrengths}</div>
-        <div class="item-list" id="r-strengths-full"></div>
-      </div>
       <div class="banner-ad-wrap">
         <div class="ad-banner-label">광고 · AD</div>
         <div id="banner-ad-middle"></div>
@@ -594,9 +590,8 @@ function unlockResult() {
 
   document.getElementById('result-full').classList.add('unlocked');
 
-  // 언락 후 — 연애 시나리오 + 매력 포인트 (중복 없이 새 내용만)
+  // 언락 후 — 연애 시나리오만 (매력 포인트는 블러 영역에서 이미 표시)
   renderTimeline('r-timeline-full', result);
-  renderStrengths('r-strengths-full', result.strengths);
 
   document.getElementById('r-cautions').innerHTML = (result.cautions || []).map(c =>
     `<div class="item">
