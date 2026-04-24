@@ -282,6 +282,11 @@ function renderQ() {
   const selected = answers[curQ];
 
   renderQInner(q, ui, cat, pct, total, selected);
+   setTimeout(() => {
+  if (window.kakaoAdfit) {
+    window.kakaoAdfit.render();
+  }
+}, 150);
 }
 
 function renderQInner(q, ui, cat, pct, total, selected) {
@@ -331,14 +336,44 @@ function renderQInner(q, ui, cat, pct, total, selected) {
     </div>
   `;
   renderAdSlot('quiz-mid-banner-slot', 'lg');
-}
+function renderAdSlot(slotId, size) {
+  const slot = document.getElementById(slotId);
+  if (!slot) return;
 
-function selectOpt(i) {
-  answers[curQ] = i;
-  document.querySelectorAll('.opt').forEach((el, idx) =>
-    el.classList.toggle('selected', idx === i));
-  const btn = document.getElementById('btn-next');
-  if (btn) btn.disabled = false;
+  let unitId = '';
+
+  if (size === 'sm') {
+    unitId = AD_CONFIG.kakao.unitId_top;
+  } else if (slotId === 'result-banner-top') {
+    unitId = AD_CONFIG.kakao.unitId_result;
+  } else {
+    unitId = AD_CONFIG.kakao.unitId_mid;
+  }
+
+  const width = AD_CONFIG.kakao.width;
+  const height = size === 'sm'
+    ? AD_CONFIG.kakao.height_sm
+    : AD_CONFIG.kakao.height_lg;
+
+  // 광고 HTML 삽입
+  slot.innerHTML = `
+    <ins class="kakao_ad_area"
+         style="display:none;"
+         data-ad-unit="${unitId}"
+         data-ad-width="${width}"
+         data-ad-height="${height}"></ins>
+  `;
+
+  // ⭐⭐⭐ 핵심: 강제 렌더링
+  setTimeout(() => {
+    try {
+      if (window.kakaoAdfit && typeof window.kakaoAdfit.render === 'function') {
+        window.kakaoAdfit.render();
+      }
+    } catch (e) {
+      console.log('Ad render error:', e);
+    }
+  }, 100);
 }
 
 function nextQ() {
@@ -550,7 +585,10 @@ function renderStrengths(id, items) {
 // ── 동영상 광고 (15초 카운트다운) ────────────────────────
 function showVideoAd() {
   document.getElementById('video-ad-modal').classList.add('show');
-  renderAdSlot('video-ad-slot', 'video');
+  renderAdSlot('video-ad-slot', 'lg');
+   <div class="video-ad-placeholder-text">
+  광고 시청 후 결과 확인 가능합니다
+</div>
   let sec = 15;
   document.getElementById('cd-num').textContent = sec;
   document.getElementById('video-progress').style.width = '0%';
