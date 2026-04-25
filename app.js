@@ -135,14 +135,14 @@ function detectType(scores) {
 // ── 광고 설정 ─────────────────────────────────────────────
 const AD_CONFIG = {
   kakao: {
-    unitId_top:    'YOUR_ADFIT_UNIT_ID_TOP',
-    unitId_bottom: 'YOUR_ADFIT_UNIT_ID_BOTTOM',
-    unitId_mid:    'YOUR_ADFIT_UNIT_ID_MID',
-    unitId_result: 'YOUR_ADFIT_UNIT_ID_RESULT',
+    unitId_top:    'DAN-LPekZqnwaDMNbcJ0',
+    unitId_bottom: 'DAN-JX789RWt4hu4ftrN',
+    unitId_mid:    'DAN-ngskDk4WpUjLNwfX',
+    unitId_result: 'DAN-u4S9HG9GMJNtyAm1',
     width: 320, height_sm: 50, height_lg: 100,
   },
   google: {
-    publisherId: 'ca-pub-XXXXXXXXXXXXXXXX',
+    publisherId: 'ca-pub-3386645467399209',
     slotId: 'XXXXXXXXXX',
   },
 };
@@ -621,29 +621,27 @@ function renderAdSlot(slotId, size) {
   const slot = document.getElementById(slotId);
   if (!slot) return;
 
-  const kakaoUnit = size === 'sm'
-    ? AD_CONFIG.kakao.unitId_top
-    : size === 'video'
-    ? AD_CONFIG.kakao.unitId_mid
-    : slotId === 'result-banner-top'
-    ? AD_CONFIG.kakao.unitId_result
-    : AD_CONFIG.kakao.unitId_mid;
+  // 슬롯 ID와 size로 정확한 단위 ID 선택
+  let unitId;
+  if (slotId === 'global-banner-bottom-slot') {
+    unitId = AD_CONFIG.kakao.unitId_bottom;
+  } else if (slotId === 'result-banner-top') {
+    unitId = AD_CONFIG.kakao.unitId_result;
+  } else if (size === 'sm') {
+    unitId = AD_CONFIG.kakao.unitId_top;
+  } else {
+    unitId = AD_CONFIG.kakao.unitId_mid;
+  }
 
   const w = AD_CONFIG.kakao.width;
   const h = size === 'sm' ? AD_CONFIG.kakao.height_sm : AD_CONFIG.kakao.height_lg;
 
-  const kakaoReady = kakaoUnit && !kakaoUnit.startsWith('YOUR_');
-  const googleReady = AD_CONFIG.google.publisherId && !AD_CONFIG.google.publisherId.includes('XXXX');
-
-  if (kakaoReady) {
-    slot.innerHTML = `<ins class="kakao_ad_area" data-ad-unit="${kakaoUnit}" data-ad-width="${w}" data-ad-height="${h}"></ins>`;
-    try { (window.adfit = window.adfit || []).push({}); } catch(e) {}
-  } else if (googleReady) {
-    slot.innerHTML = `<ins class="adsbygoogle" style="display:block;" data-ad-client="${AD_CONFIG.google.publisherId}" data-ad-slot="${AD_CONFIG.google.slotId}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
-    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-  } else {
-    slot.innerHTML = `<div class="ad-placeholder-box">광고 영역 ${w}×${h}</div>`;
-  }
+  // 카카오 애드핏 공식 삽입
+  slot.innerHTML =
+    '<ins class="kakao_ad_area"' +
+    ' data-ad-unit="' + unitId + '"' +
+    ' data-ad-width="' + w + '"' +
+    ' data-ad-height="' + h + '"></ins>';
 }
 
 // ── 공유 이미지 생성 ─────────────────────────────────────
