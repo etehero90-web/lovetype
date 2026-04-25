@@ -45,7 +45,7 @@ function calcScores(answers) {
     // 라이프스타일: 인덱스 27~32
     lifestyle: avg([27,28,29,30,31,32]),
     // 연애 가치관: 인덱스 33~37
-    value:     avg([33,34,35,36,37]),
+    value:     avg([33,34,35,36]),
   };
 }
 
@@ -135,10 +135,10 @@ function detectType(scores) {
 // ── 광고 설정 ─────────────────────────────────────────────
 const AD_CONFIG = {
   kakao: {
-    unitId_top:    'DAN-LPekZqnwaDMNbcJ0',
-    unitId_bottom: 'DAN-JX789RWt4hu4ftrN',
-    unitId_mid:    'DAN-ngskDk4WpUjLNwfX',
-    unitId_result: 'DAN-u4S9HG9GMJNtyAm1',
+    unitId_top:    'YOUR_ADFIT_UNIT_ID_TOP',
+    unitId_bottom: 'YOUR_ADFIT_UNIT_ID_BOTTOM',
+    unitId_mid:    'YOUR_ADFIT_UNIT_ID_MID',
+    unitId_result: 'YOUR_ADFIT_UNIT_ID_RESULT',
     width: 320, height_sm: 50, height_lg: 100,
   },
   google: {
@@ -282,11 +282,6 @@ function renderQ() {
   const selected = answers[curQ];
 
   renderQInner(q, ui, cat, pct, total, selected);
-   setTimeout(() => {
-  if (window.kakaoAdfit) {
-    window.kakaoAdfit.render();
-  }
-}, 150);
 }
 
 function renderQInner(q, ui, cat, pct, total, selected) {
@@ -336,44 +331,14 @@ function renderQInner(q, ui, cat, pct, total, selected) {
     </div>
   `;
   renderAdSlot('quiz-mid-banner-slot', 'lg');
-function renderAdSlot(slotId, size) {
-  const slot = document.getElementById(slotId);
-  if (!slot) return;
+}
 
-  let unitId = '';
-
-  if (size === 'sm') {
-    unitId = AD_CONFIG.kakao.unitId_top;
-  } else if (slotId === 'result-banner-top') {
-    unitId = AD_CONFIG.kakao.unitId_result;
-  } else {
-    unitId = AD_CONFIG.kakao.unitId_mid;
-  }
-
-  const width = AD_CONFIG.kakao.width;
-  const height = size === 'sm'
-    ? AD_CONFIG.kakao.height_sm
-    : AD_CONFIG.kakao.height_lg;
-
-  // 광고 HTML 삽입
-  slot.innerHTML = `
-    <ins class="kakao_ad_area"
-         style="display:none;"
-         data-ad-unit="${unitId}"
-         data-ad-width="${width}"
-         data-ad-height="${height}"></ins>
-  `;
-
-  // ⭐⭐⭐ 핵심: 강제 렌더링
-  setTimeout(() => {
-    try {
-      if (window.kakaoAdfit && typeof window.kakaoAdfit.render === 'function') {
-        window.kakaoAdfit.render();
-      }
-    } catch (e) {
-      console.log('Ad render error:', e);
-    }
-  }, 100);
+function selectOpt(i) {
+  answers[curQ] = i;
+  document.querySelectorAll('.opt').forEach((el, idx) =>
+    el.classList.toggle('selected', idx === i));
+  const btn = document.getElementById('btn-next');
+  if (btn) btn.disabled = false;
 }
 
 function nextQ() {
@@ -585,10 +550,7 @@ function renderStrengths(id, items) {
 // ── 동영상 광고 (15초 카운트다운) ────────────────────────
 function showVideoAd() {
   document.getElementById('video-ad-modal').classList.add('show');
-  renderAdSlot('video-ad-slot', 'lg');
-   <div class="video-ad-placeholder-text">
-  광고 시청 후 결과 확인 가능합니다
-</div>
+  renderAdSlot('video-ad-slot', 'video');
   let sec = 15;
   document.getElementById('cd-num').textContent = sec;
   document.getElementById('video-progress').style.width = '0%';
@@ -670,10 +632,13 @@ function renderAdSlot(slotId, size) {
   const w = AD_CONFIG.kakao.width;
   const h = size === 'sm' ? AD_CONFIG.kakao.height_sm : AD_CONFIG.kakao.height_lg;
 
-  if (kakaoUnit && kakaoUnit !== 'YOUR_ADFIT_UNIT_ID_TOP') {
+  const kakaoReady = kakaoUnit && !kakaoUnit.startsWith('YOUR_');
+  const googleReady = AD_CONFIG.google.publisherId && !AD_CONFIG.google.publisherId.includes('XXXX');
+
+  if (kakaoReady) {
     slot.innerHTML = `<ins class="kakao_ad_area" data-ad-unit="${kakaoUnit}" data-ad-width="${w}" data-ad-height="${h}"></ins>`;
     try { (window.adfit = window.adfit || []).push({}); } catch(e) {}
-  } else if (AD_CONFIG.google.publisherId !== 'ca-pub-XXXXXXXXXXXXXXXX') {
+  } else if (googleReady) {
     slot.innerHTML = `<ins class="adsbygoogle" style="display:block;" data-ad-client="${AD_CONFIG.google.publisherId}" data-ad-slot="${AD_CONFIG.google.slotId}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
     try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
   } else {
@@ -937,4 +902,7 @@ function restart() {
 }
 
 // ── 초기화 ────────────────────────────────────────────────
-rebuildApp();
+// ※ 앱 최초 1회만 실행
+(function init() {
+  rebuildApp();
+})();
