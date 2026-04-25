@@ -167,8 +167,7 @@ function rebuildApp() {
     ${buildQuizScreen()}
     ${buildResultScreen()}
   `;
-  renderAdSlot('global-banner-slot',        'sm');
-  renderAdSlot('global-banner-bottom-slot', 'sm');
+  // 상단/하단 배너는 index.html에 ins 태그로 미리 배치됨
   showScreen('lang');
 }
 
@@ -316,7 +315,10 @@ function renderQInner(q, ui, cat, pct, total, selected) {
 
     <div class="quiz-mid-banner">
       <div class="ad-banner-label">광고 · AD</div>
-      <div id="quiz-mid-banner-slot"></div>
+      <ins class="kakao_ad_area"
+           data-ad-unit="DAN-ngskDk4WpUjLNwfX"
+           data-ad-width="320"
+           data-ad-height="100"></ins>
     </div>
 
     <div class="q-card">
@@ -330,7 +332,6 @@ function renderQInner(q, ui, cat, pct, total, selected) {
       <button class="btn-next" id="btn-next" onclick="nextQ()" ${selected === undefined ? 'disabled' : ''}>${ui.next}</button>
     </div>
   `;
-  renderAdSlot('quiz-mid-banner-slot', 'lg');
 }
 
 function selectOpt(i) {
@@ -382,7 +383,11 @@ function buildResultScreen() {
 
     <div class="result-inline-banner">
       <div class="ad-banner-label">광고 · AD</div>
-      <div id="result-banner-top"></div>
+      <ins class="kakao_ad_area"
+           id="result-banner-ins"
+           data-ad-unit="DAN-u4S9HG9GMJNtyAm1"
+           data-ad-width="320"
+           data-ad-height="100"></ins>
     </div>
 
     <div class="result-preview-card">
@@ -420,7 +425,10 @@ function buildResultScreen() {
       </div>
       <div class="banner-ad-wrap">
         <div class="ad-banner-label">광고 · AD</div>
-        <div id="banner-ad-middle"></div>
+        <ins class="kakao_ad_area"
+             data-ad-unit="DAN-ngskDk4WpUjLNwfX"
+             data-ad-width="320"
+             data-ad-height="100"></ins>
       </div>
       <div class="sec-card">
         <div class="sec-label">${ui.secRisks}</div>
@@ -444,7 +452,10 @@ function buildResultScreen() {
       </div>
       <div class="banner-ad-wrap">
         <div class="ad-banner-label">광고 · AD</div>
-        <div id="banner-ad-bottom"></div>
+        <ins class="kakao_ad_area"
+             data-ad-unit="DAN-ngskDk4WpUjLNwfX"
+             data-ad-width="320"
+             data-ad-height="100"></ins>
       </div>
       <div class="disclaimer-bottom">${ui.disclaimer}</div>
       <button class="btn-ghost" onclick="restart()" style="margin-bottom:2rem">${ui.restart}</button>
@@ -458,10 +469,11 @@ function buildResultScreen() {
           <span class="video-ad-skip" id="skip-btn">잠시 후 건너뛸 수 있어요</span>
         </div>
         <div class="video-ad-slot" id="video-ad-slot">
-          <div class="video-ad-placeholder">
-            <div class="video-ad-placeholder-icon">📺</div>
-            <div class="video-ad-placeholder-text">광고 영역<br>카카오 애드핏 / 구글 애드센스</div>
-          </div>
+          <ins class="kakao_ad_area"
+               id="video-ad-ins"
+               data-ad-unit="DAN-ngskDk4WpUjLNwfX"
+               data-ad-width="320"
+               data-ad-height="100"></ins>
         </div>
         <div class="video-progress-wrap">
           <div class="video-progress-bg">
@@ -502,7 +514,6 @@ function finishQuiz() {
   _currentType   = { code: typeCode, emoji: result.emoji, name: result.type_name };
 
   showScreen('result');
-  renderAdSlot('result-banner-top', 'lg');
 
   // 미리보기 영역 채우기
   document.getElementById('r-emoji').textContent    = result.emoji;
@@ -550,7 +561,6 @@ function renderStrengths(id, items) {
 // ── 동영상 광고 (15초 카운트다운) ────────────────────────
 function showVideoAd() {
   document.getElementById('video-ad-modal').classList.add('show');
-  renderAdSlot('video-ad-slot', 'video');
   let sec = 15;
   document.getElementById('cd-num').textContent = sec;
   document.getElementById('video-progress').style.width = '0%';
@@ -608,8 +618,6 @@ function unlockResult() {
   document.getElementById('r-closing').textContent = result.closing;
   document.getElementById('r-share-msg').textContent = result.share;
 
-  renderAdSlot('banner-ad-middle', 'lg');
-  renderAdSlot('banner-ad-bottom', 'lg');
 
   setTimeout(() =>
     document.getElementById('result-full').scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
@@ -621,7 +629,7 @@ function renderAdSlot(slotId, size) {
   const slot = document.getElementById(slotId);
   if (!slot) return;
 
-  // 슬롯 ID와 size로 정확한 단위 ID 선택
+  // 슬롯 ID로 정확한 단위 ID 선택
   let unitId;
   if (slotId === 'global-banner-bottom-slot') {
     unitId = AD_CONFIG.kakao.unitId_bottom;
@@ -636,12 +644,36 @@ function renderAdSlot(slotId, size) {
   const w = AD_CONFIG.kakao.width;
   const h = size === 'sm' ? AD_CONFIG.kakao.height_sm : AD_CONFIG.kakao.height_lg;
 
-  // 카카오 애드핏 공식 삽입
-  slot.innerHTML =
-    '<ins class="kakao_ad_area"' +
-    ' data-ad-unit="' + unitId + '"' +
-    ' data-ad-width="' + w + '"' +
-    ' data-ad-height="' + h + '"></ins>';
+  // 기존 내용 초기화
+  slot.innerHTML = '';
+
+  // <ins> 엘리먼트 생성 및 속성 설정
+  const ins = document.createElement('ins');
+  ins.className = 'kakao_ad_area';
+  ins.setAttribute('data-ad-unit', unitId);
+  ins.setAttribute('data-ad-width', String(w));
+  ins.setAttribute('data-ad-height', String(h));
+  slot.appendChild(ins);
+
+  // 카카오 SDK 재실행 — 동적 삽입 후 광고 로드
+  try {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = '//t1.daumcdn.net/kas/static/ba.min.js';
+    script.async = true;
+    // 이미 로드된 경우 중복 방지 — 직접 adfit 호출
+    if (window.adfit) {
+      window.adfit.forEach && window.adfit.forEach(function(fn) {
+        try { typeof fn === 'function' && fn(); } catch(e) {}
+      });
+    }
+    // SDK가 없으면 새로 로드
+    if (!window.adfit) {
+      slot.appendChild(script);
+    }
+  } catch(e) {
+    // 무시
+  }
 }
 
 // ── 공유 이미지 생성 ─────────────────────────────────────
